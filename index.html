@@ -9,39 +9,64 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #0b1220;
+      --panel: #121a2b;
+      --panel-2: #182235;
+      --card: #1c2740;
+      --card-soft: #22304d;
+      --text: #e8eefc;
+      --muted: #9fb0d0;
+      --border: #2d3b59;
+      --primary: #6ea8fe;
+      --primary-hover: #8ab8ff;
+      --success: #3ddc97;
+      --danger: #ff7b7b;
+      --warning: #f6c85f;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      color: #1f2937;
+      background:
+        radial-gradient(circle at top left, #16233b 0%, transparent 30%),
+        radial-gradient(circle at top right, #1a2946 0%, transparent 25%),
+        linear-gradient(180deg, #09101c 0%, #0b1220 100%);
+      color: var(--text);
       padding: 30px 15px;
     }
 
     .container {
       max-width: 1100px;
       margin: 0 auto;
-      background: #ffffff;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      background: rgba(18, 26, 43, 0.92);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
       padding: 30px;
     }
 
     h1 {
       margin: 0 0 10px;
-      font-size: 38px;
+      font-size: 40px;
       line-height: 1.1;
+      color: #ffffff;
     }
 
     .subtitle {
-      color: #4b5563;
+      color: var(--muted);
       font-size: 18px;
       margin-bottom: 25px;
+      line-height: 1.5;
     }
 
     .section-title {
       margin-top: 30px;
       margin-bottom: 12px;
       font-size: 22px;
+      color: #ffffff;
     }
 
     .settings {
@@ -59,17 +84,24 @@
 
     label {
       font-size: 14px;
-      color: #4b5563;
+      color: var(--muted);
       font-weight: 700;
     }
 
     input, select, textarea {
       padding: 12px;
       font-size: 16px;
-      border: 1px solid #d1d5db;
+      border: 1px solid var(--border);
       border-radius: 12px;
-      background: white;
+      background: var(--panel-2);
+      color: var(--text);
       width: 100%;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(110, 168, 254, 0.15);
     }
 
     .inputs {
@@ -96,51 +128,55 @@
       border: none;
       border-radius: 12px;
       padding: 14px 18px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
       transition: 0.2s ease;
     }
 
     .primary {
-      background: #111827;
-      color: white;
+      background: var(--primary);
+      color: #08111f;
     }
 
     .primary:hover {
-      background: #1f2937;
+      background: var(--primary-hover);
+      transform: translateY(-1px);
     }
 
     .secondary {
-      background: #e5e7eb;
-      color: #111827;
+      background: #2a3958;
+      color: var(--text);
     }
 
     .secondary:hover {
-      background: #d1d5db;
+      background: #33466a;
+      transform: translateY(-1px);
     }
 
     .danger {
-      background: #fee2e2;
-      color: #991b1b;
+      background: rgba(255, 123, 123, 0.15);
+      color: #ffb1b1;
+      border: 1px solid rgba(255, 123, 123, 0.25);
     }
 
     .danger:hover {
-      background: #fecaca;
+      background: rgba(255, 123, 123, 0.22);
     }
 
     .success {
-      background: #dcfce7;
-      color: #166534;
+      background: rgba(61, 220, 151, 0.18);
+      color: #b5f5d8;
+      border: 1px solid rgba(61, 220, 151, 0.25);
     }
 
     .success:hover {
-      background: #bbf7d0;
+      background: rgba(61, 220, 151, 0.26);
     }
 
     .error {
       margin-top: 10px;
-      color: #b91c1c;
+      color: #ff9d9d;
       font-weight: 700;
     }
 
@@ -152,46 +188,81 @@
     }
 
     .card {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
+      background: linear-gradient(180deg, #1a2540 0%, #162038 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
       padding: 18px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
     }
 
     .card h3 {
       margin: 0 0 8px;
-      font-size: 14px;
-      color: #6b7280;
+      font-size: 13px;
+      color: var(--muted);
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
 
     .card .value {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 800;
       line-height: 1.2;
+      color: #ffffff;
     }
 
     .card .small {
       margin-top: 8px;
-      color: #6b7280;
+      color: var(--muted);
       font-size: 14px;
       line-height: 1.5;
     }
 
-    .result-box {
+    .hero-result {
       margin-top: 24px;
-      background: #eef2ff;
-      border: 1px solid #c7d2fe;
+      background: linear-gradient(135deg, #1f2e4c 0%, #26395d 100%);
+      border: 1px solid #3a5180;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-label {
+      font-size: 13px;
+      color: #b6c7ea;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .hero-value {
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .hero-desc {
+      color: #d2dcf2;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .result-box {
+      margin-top: 18px;
+      background: rgba(110, 168, 254, 0.08);
+      border: 1px solid rgba(110, 168, 254, 0.18);
       border-radius: 14px;
       padding: 20px;
       line-height: 1.7;
       font-size: 18px;
+      color: var(--text);
     }
 
     .muted {
-      color: #6b7280;
+      color: var(--muted);
       font-size: 14px;
     }
 
@@ -203,16 +274,18 @@
     }
 
     .odds-item {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 14px;
+      color: var(--text);
     }
 
     .odds-item strong {
       display: block;
       font-size: 20px;
       margin-top: 6px;
+      color: #ffffff;
     }
 
     .split {
@@ -225,8 +298,8 @@
       margin-top: 20px;
       padding: 16px;
       border-radius: 12px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
     }
 
     .share-text {
@@ -234,12 +307,13 @@
       min-height: 90px;
       resize: vertical;
       font-size: 15px;
+      line-height: 1.5;
     }
 
     .footer-note {
       margin-top: 24px;
       font-size: 14px;
-      color: #6b7280;
+      color: var(--muted);
       line-height: 1.6;
     }
 
@@ -264,6 +338,10 @@
 
       .card .value {
         font-size: 24px;
+      }
+
+      .hero-value {
+        font-size: 36px;
       }
     }
   </style>
@@ -348,6 +426,14 @@
 
     <div id="error" class="error"></div>
 
+    <div class="hero-result">
+      <div class="hero-label">Main result</div>
+      <div class="hero-value" id="heroResult">—</div>
+      <div class="hero-desc" id="heroDescription">
+        Run a simulation to see your main result here.
+      </div>
+    </div>
+
     <div class="results-grid">
       <div class="card">
         <h3>Odds per draw</h3>
@@ -425,15 +511,13 @@
       <div>
         <div class="section-title">Share result</div>
         <div class="share-box">
-          <textarea id="shareText" class="share-text" readonly>
-Run a simulation to generate a shareable result.
-          </textarea>
+          <textarea id="shareText" class="share-text" readonly>Run a simulation to generate a shareable result.</textarea>
         </div>
       </div>
     </div>
 
     <div class="footer-note">
-      This tool shows random simulations and probability-based estimates. It does not predict future lottery draws.  
+      This tool shows random simulations and probability-based estimates. It does not predict future lottery draws.
       For presets with bonus numbers, the jackpot requires matching both the main numbers and the bonus numbers.
     </div>
   </div>
@@ -698,6 +782,11 @@ Run a simulation to generate a shareable result.
       return Math.ceil(Math.log(1 - u) / Math.log(1 - p));
     }
 
+    function setHeroResult(value, description) {
+      document.getElementById("heroResult").textContent = value;
+      document.getElementById("heroDescription").textContent = description;
+    }
+
     function updateStaticStats() {
       clearError();
 
@@ -734,6 +823,11 @@ Run a simulation to generate a shareable result.
       document.getElementById("chance20b").textContent = formatPercent(p20);
       document.getElementById("chance50b").textContent = formatPercent(p50);
       document.getElementById("chance80b").textContent = formatPercent(p80);
+
+      setHeroResult(
+        formatNumber(averageYears),
+        "Average expected jackpot wait based on the current lottery format and your draws per week."
+      );
     }
 
     function runOneSimulation() {
@@ -755,6 +849,11 @@ Run a simulation to generate a shareable result.
       const yearsNeeded = drawsNeeded / (drawsPerWeek * 52);
       const moneySpent = drawsNeeded * ticketPrice;
 
+      setHeroResult(
+        formatNumber(yearsNeeded, 1) + " years",
+        "In this single random simulation, your numbers matched the jackpot after this approximate time."
+      );
+
       document.getElementById("resultBox").innerHTML = `
         <strong>In this simulation, your numbers matched the jackpot after:</strong><br>
         ${formatNumber(drawsNeeded)} draws<br><br>
@@ -769,7 +868,7 @@ Run a simulation to generate a shareable result.
       `;
 
       document.getElementById("shareText").value =
-        `I ran a lottery simulation and my numbers would win once every ${formatNumber(yearsNeeded, 1)} years in this simulation. Odds per draw: 1 in ${formatNumber(getJackpotCombinations(config))}.`;
+        `My lottery numbers matched the jackpot after about ${formatNumber(yearsNeeded, 1)} years in one simulation.`;
     }
 
     function runHundredSimulations() {
@@ -804,6 +903,11 @@ Run a simulation to generate a shareable result.
       const worstYears = worstDraws / (drawsPerWeek * 52);
       const averageSpent = averageDraws * ticketPrice;
 
+      setHeroResult(
+        formatNumber(averageYears, 1) + " years",
+        "Average wait from 100 simulations. This gives a better feel for how extreme lottery variance can be."
+      );
+
       document.getElementById("resultBox").innerHTML = `
         <strong>Results from 100 simulations:</strong><br><br>
 
@@ -819,7 +923,7 @@ Run a simulation to generate a shareable result.
       `;
 
       document.getElementById("shareText").value =
-        `I ran 100 lottery simulations. Average wait: ${formatNumber(averageYears, 1)} years. Best result: ${formatNumber(bestYears, 1)} years. Worst result: ${formatNumber(worstYears, 1)} years.`;
+        `I ran 100 lottery simulations. Average jackpot wait: ${formatNumber(averageYears, 1)} years.`;
     }
 
     function generateUniqueNumbers(count, max) {
@@ -857,6 +961,7 @@ Run a simulation to generate a shareable result.
       }
 
       document.getElementById("shareText").value = "Random numbers generated. Run a simulation to create a shareable result.";
+      setHeroResult("Ready", "Random numbers were generated. Run a simulation to see the outcome.");
     }
 
     function compareWithRandom() {
@@ -887,18 +992,23 @@ Run a simulation to generate a shareable result.
       const avgRandomYears = avgRandom / (drawsPerWeek * 52);
       const difference = Math.abs(avgUserYears - avgRandomYears);
 
+      setHeroResult(
+        "No real edge",
+        "Chosen numbers and random numbers have the same true jackpot odds. Any difference in a simulation is just randomness."
+      );
+
       document.getElementById("resultBox").innerHTML = `
         <strong>Your numbers vs random numbers (100 simulations each):</strong><br><br>
 
         <strong>Your numbers average:</strong> ${formatNumber(avgUserYears, 1)} years<br>
         <strong>Random numbers average:</strong> ${formatNumber(avgRandomYears, 1)} years<br>
-        <strong>Difference:</strong> ${formatNumber(difference, 1)} years<br><br>
+        <strong>Simulated difference:</strong> ${formatNumber(difference, 1)} years<br><br>
 
-        <span class="muted">Statistically, chosen numbers and random numbers have the same jackpot chance. Any short-term difference here is just randomness.</span>
+        <span class="muted">Both number sets have exactly the same real jackpot odds. This difference is only random variation from the simulation.</span>
       `;
 
       document.getElementById("shareText").value =
-        `I compared my lottery numbers vs random numbers over 100 simulations. Result: no real statistical advantage. My average: ${formatNumber(avgUserYears, 1)} years, random average: ${formatNumber(avgRandomYears, 1)} years.`;
+        `I compared my lottery numbers with random numbers. Result: both have the same real odds.`;
     }
 
     function runLifetimeCalculator() {
@@ -928,6 +1038,11 @@ Run a simulation to generate a shareable result.
       const chanceToWin = (1 - Math.pow(1 - p, totalDraws)) * 100;
       const chanceToNeverWin = 100 - chanceToWin;
 
+      setHeroResult(
+        formatPercent(chanceToWin),
+        `If you play from age ${currentAge} to ${playUntilAge}, this is your chance to hit the jackpot at least once.`
+      );
+
       document.getElementById("lifetimeBox").innerHTML = `
         <strong>If you play from age ${currentAge} to ${playUntilAge}:</strong><br><br>
 
@@ -938,8 +1053,12 @@ Run a simulation to generate a shareable result.
         <strong>Chance to hit jackpot at least once:</strong> ${formatPercent(chanceToWin)}<br>
         <strong>Chance to never hit jackpot:</strong> ${formatPercent(chanceToNeverWin)}<br><br>
 
-        <span class="muted">This assumes your chance stays the same on every draw.</span>
+        <strong>Reality check:</strong><br>
+        Even after playing for ${yearsPlaying} years, the jackpot chance is still usually very low.
       `;
+
+      document.getElementById("shareText").value =
+        `Even if I played this lottery for ${yearsPlaying} years, my jackpot chance would still be only ${formatPercent(chanceToWin)}.`;
     }
 
     function copyShareText() {
@@ -957,6 +1076,7 @@ Run a simulation to generate a shareable result.
       document.getElementById("resultBox").innerHTML = "Your results will appear here.";
       document.getElementById("lifetimeBox").innerHTML = "Lifetime results will appear here.";
       document.getElementById("shareText").value = "Run a simulation to generate a shareable result.";
+      setHeroResult("—", "Run a simulation to see your main result here.");
     }
 
     function resetAll() {
