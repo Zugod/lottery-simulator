@@ -321,9 +321,75 @@
       display: none;
     }
 
+    .chart-wrap {
+      margin-top: 18px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      color: #ffffff;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      align-items: end;
+      min-height: 220px;
+    }
+
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar-value {
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 16px;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 110px;
+      min-height: 8px;
+      border-radius: 10px 10px 4px 4px;
+      background: linear-gradient(180deg, #7cb4ff 0%, #4f86e8 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .bar-label {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
     @media (max-width: 900px) {
       .split {
         grid-template-columns: 1fr;
+      }
+
+      .chart-grid {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .bar-col {
+        align-items: stretch;
+      }
+
+      .bar {
+        max-width: none;
       }
     }
 
@@ -427,7 +493,7 @@
     <div id="error" class="error"></div>
 
     <div class="hero-result">
-      <div class="hero-label">Main result</div>
+      <div class="hero-label">Average jackpot wait</div>
       <div class="hero-value" id="heroResult">—</div>
       <div class="hero-desc" id="heroDescription">
         Run a simulation to see your main result here.
@@ -464,7 +530,12 @@
       Your results will appear here.
     </div>
 
-    <div class="section-title">Chance over time</div>
+    <div id="chartWrap" class="chart-wrap hidden">
+      <div class="chart-title">100-Simulation Reality Check</div>
+      <div id="chartGrid" class="chart-grid"></div>
+    </div>
+
+    <div class="section-title">Your chance of winning over time</div>
     <div class="odds-list">
       <div class="odds-item">
         10 years
@@ -569,14 +640,11 @@
     function combinations(n, k) {
       if (k < 0 || n < 0 || k > n) return 0;
       if (k === 0 || k === n) return 1;
-
       k = Math.min(k, n - k);
       let result = 1;
-
       for (let i = 1; i <= k; i++) {
         result = result * (n - k + i) / i;
       }
-
       return result;
     }
 
@@ -698,22 +766,18 @@
     function getMainNumbers() {
       const config = getConfig();
       const values = [];
-
       for (let i = 1; i <= config.mainPicks; i++) {
         values.push(Number(document.getElementById("main_" + i).value));
       }
-
       return values;
     }
 
     function getBonusNumbers() {
       const config = getConfig();
       const values = [];
-
       for (let i = 1; i <= config.bonusPicks; i++) {
         values.push(Number(document.getElementById("bonus_" + i).value));
       }
-
       return values;
     }
 
@@ -825,9 +889,58 @@
       document.getElementById("chance80b").textContent = formatPercent(p80);
 
       setHeroResult(
-        formatNumber(averageYears),
-        "Average expected jackpot wait based on the current lottery format and your draws per week."
+        formatNumber(averageYears) + " years",
+        "At your current draw frequency, this lottery is practically unwinnable in a normal human lifetime."
       );
+    }
+
+    function renderHistogram(results, drawsPerWeek) {
+      const years = results.map(r => r / (drawsPerWeek * 52));
+
+      const buckets = [
+        { label: "< 10k years", count: 0 },
+        { label: "10k–50k", count: 0 },
+        { label: "50k–100k", count: 0 },
+        { label: "100k–500k", count: 0 },
+        { label: "500k+", count: 0 }
+      ];
+
+      years.forEach(y => {
+        if (y < 10000) buckets[0].count++;
+        else if (y < 50000) buckets[1].count++;
+        else if (y < 100000) buckets[2].count++;
+        else if (y < 500000) buckets[3].count++;
+        else buckets[4].count++;
+      });
+
+      const maxCount = Math.max(...buckets.map(b => b.count), 1);
+      const chartGrid = document.getElementById("chartGrid");
+      chartGrid.innerHTML = "";
+
+      buckets.forEach(bucket => {
+        const col = document.createElement("div");
+        col.className = "bar-col";
+
+        const value = document.createElement("div");
+        value.className = "bar-value";
+        value.textContent = bucket.count;
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.height = `${Math.max((bucket.count / maxCount) * 180, 8)}px`;
+
+        const label = document.createElement("div");
+        label.className = "bar-label";
+        label.textContent = bucket.label;
+
+        col.appendChild(value);
+        col.appendChild(bar);
+        col.appendChild(label);
+
+        chartGrid.appendChild(col);
+      });
+
+      document.getElementById("chartWrap").classList.remove("hidden");
     }
 
     function runOneSimulation() {
@@ -869,6 +982,8 @@
 
       document.getElementById("shareText").value =
         `My lottery numbers matched the jackpot after about ${formatNumber(yearsNeeded, 1)} years in one simulation.`;
+
+      document.getElementById("chartWrap").classList.add("hidden");
     }
 
     function runHundredSimulations() {
@@ -905,11 +1020,11 @@
 
       setHeroResult(
         formatNumber(averageYears, 1) + " years",
-        "Average wait from 100 simulations. This gives a better feel for how extreme lottery variance can be."
+        "At 2 draws per week, this lottery is practically unwinnable in a human lifetime."
       );
 
       document.getElementById("resultBox").innerHTML = `
-        <strong>Results from 100 simulations:</strong><br><br>
+        <strong>100-Simulation Reality Check:</strong><br><br>
 
         <strong>Average result:</strong> ${formatNumber(averageYears, 1)} years<br>
         <strong>Median result:</strong> ${formatNumber(medianYears, 1)} years<br>
@@ -924,6 +1039,8 @@
 
       document.getElementById("shareText").value =
         `I ran 100 lottery simulations. Average jackpot wait: ${formatNumber(averageYears, 1)} years.`;
+
+      renderHistogram(results, drawsPerWeek);
     }
 
     function generateUniqueNumbers(count, max) {
@@ -962,6 +1079,7 @@
 
       document.getElementById("shareText").value = "Random numbers generated. Run a simulation to create a shareable result.";
       setHeroResult("Ready", "Random numbers were generated. Run a simulation to see the outcome.");
+      document.getElementById("chartWrap").classList.add("hidden");
     }
 
     function compareWithRandom() {
@@ -994,7 +1112,7 @@
 
       setHeroResult(
         "No real edge",
-        "Chosen numbers and random numbers have the same true jackpot odds. Any difference in a simulation is just randomness."
+        "Your chosen numbers are not smarter than random numbers. Any difference you see here is just noise from the simulation."
       );
 
       document.getElementById("resultBox").innerHTML = `
@@ -1009,6 +1127,8 @@
 
       document.getElementById("shareText").value =
         `I compared my lottery numbers with random numbers. Result: both have the same real odds.`;
+
+      document.getElementById("chartWrap").classList.add("hidden");
     }
 
     function runLifetimeCalculator() {
@@ -1040,7 +1160,7 @@
 
       setHeroResult(
         formatPercent(chanceToWin),
-        `If you play from age ${currentAge} to ${playUntilAge}, this is your chance to hit the jackpot at least once.`
+        `Even if you play for ${yearsPlaying} years, your jackpot chance is still usually tiny.`
       );
 
       document.getElementById("lifetimeBox").innerHTML = `
@@ -1059,6 +1179,8 @@
 
       document.getElementById("shareText").value =
         `Even if I played this lottery for ${yearsPlaying} years, my jackpot chance would still be only ${formatPercent(chanceToWin)}.`;
+
+      document.getElementById("chartWrap").classList.add("hidden");
     }
 
     function copyShareText() {
@@ -1077,6 +1199,7 @@
       document.getElementById("lifetimeBox").innerHTML = "Lifetime results will appear here.";
       document.getElementById("shareText").value = "Run a simulation to generate a shareable result.";
       setHeroResult("—", "Run a simulation to see your main result here.");
+      document.getElementById("chartWrap").classList.add("hidden");
     }
 
     function resetAll() {
