@@ -1,163 +1,1252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lottery Simulator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<title>Lottery Odds Simulator - How Long Would It Take to Win?</title>
+    :root {
+      --bg: #0b1220;
+      --panel: #121a2b;
+      --panel-2: #182235;
+      --card: #1c2740;
+      --card-soft: #22304d;
+      --text: #e8eefc;
+      --muted: #9fb0d0;
+      --border: #2d3b59;
+      --primary: #6ea8fe;
+      --primary-hover: #8ab8ff;
+      --success: #3ddc97;
+      --danger: #ff7b7b;
+      --warning: #f6c85f;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    }
 
-<meta name="description" content="Lottery odds simulator. Enter your numbers and see how long it could take to win the jackpot." />
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, #16233b 0%, transparent 30%),
+        radial-gradient(circle at top right, #1a2946 0%, transparent 25%),
+        linear-gradient(180deg, #09101c 0%, #0b1220 100%);
+      color: var(--text);
+      padding: 30px 15px;
+    }
 
-<style>
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: rgba(18, 26, 43, 0.92);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+    }
 
-body{
-font-family:Arial;
-background:#0b1220;
-color:white;
-padding:40px;
-}
+    h1 {
+      margin: 0 0 10px;
+      font-size: 40px;
+      line-height: 1.1;
+      color: #ffffff;
+    }
 
-.container{
-max-width:1000px;
-margin:auto;
-}
+    .subtitle {
+      color: var(--muted);
+      font-size: 18px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
 
-input{
-padding:10px;
-width:60px;
-margin:5px;
-font-size:16px;
-}
+    .section-title {
+      margin-top: 30px;
+      margin-bottom: 12px;
+      font-size: 22px;
+      color: #ffffff;
+    }
 
-button{
-padding:12px 16px;
-margin:5px;
-font-size:16px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-}
+    .settings {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
 
-.primary{
-background:#4e8cff;
-color:white;
-}
+    .setting-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-.secondary{
-background:#26314f;
-color:white;
-}
+    label {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 700;
+    }
 
-.result{
-margin-top:30px;
-padding:20px;
-background:#1a2440;
-border-radius:10px;
-}
+    input, select, textarea {
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel-2);
+      color: var(--text);
+      width: 100%;
+      outline: none;
+    }
 
-.card{
-background:#1a2440;
-padding:15px;
-margin:10px 0;
-border-radius:10px;
-}
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(110, 168, 254, 0.15);
+    }
 
-.section-title{
-font-size:26px;
-margin-top:40px;
-}
+    .inputs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
 
-</style>
+    .number-input {
+      width: 78px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .primary {
+      background: var(--primary);
+      color: #08111f;
+    }
+
+    .primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .secondary {
+      background: #2a3958;
+      color: var(--text);
+    }
+
+    .secondary:hover {
+      background: #33466a;
+      transform: translateY(-1px);
+    }
+
+    .danger {
+      background: rgba(255, 123, 123, 0.15);
+      color: #ffb1b1;
+      border: 1px solid rgba(255, 123, 123, 0.25);
+    }
+
+    .danger:hover {
+      background: rgba(255, 123, 123, 0.22);
+    }
+
+    .success {
+      background: rgba(61, 220, 151, 0.18);
+      color: #b5f5d8;
+      border: 1px solid rgba(61, 220, 151, 0.25);
+    }
+
+    .success:hover {
+      background: rgba(61, 220, 151, 0.26);
+    }
+
+    .error {
+      margin-top: 10px;
+      color: #ff9d9d;
+      font-weight: 700;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #1a2540 0%, #162038 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .card .value {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #ffffff;
+    }
+
+    .card .small {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .hero-result {
+      margin-top: 24px;
+      background: linear-gradient(135deg, #1f2e4c 0%, #26395d 100%);
+      border: 1px solid #3a5180;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-label {
+      font-size: 13px;
+      color: #b6c7ea;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .hero-value {
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .hero-desc {
+      color: #d2dcf2;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .result-box {
+      margin-top: 18px;
+      background: rgba(110, 168, 254, 0.08);
+      border: 1px solid rgba(110, 168, 254, 0.18);
+      border-radius: 14px;
+      padding: 20px;
+      line-height: 1.7;
+      font-size: 18px;
+      color: var(--text);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .odds-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .odds-item {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      color: var(--text);
+    }
+
+    .odds-item strong {
+      display: block;
+      font-size: 20px;
+      margin-top: 6px;
+      color: #ffffff;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .share-box {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+    }
+
+    .share-text {
+      width: 100%;
+      min-height: 90px;
+      resize: vertical;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .chart-wrap {
+      margin-top: 18px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      color: #ffffff;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      align-items: end;
+      min-height: 220px;
+    }
+
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar-value {
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 16px;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 110px;
+      min-height: 8px;
+      border-radius: 10px 10px 4px 4px;
+      background: linear-gradient(180deg, #7cb4ff 0%, #4f86e8 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .bar-label {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 900px) {
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-grid {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .bar-col {
+        align-items: stretch;
+      }
+
+      .bar {
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 30px;
+      }
+
+      .number-input {
+        width: 64px;
+      }
+
+      .card .value {
+        font-size: 24px;
+      }
+
+      .hero-value {
+        font-size: 36px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <h1>Lottery Simulator</h1>
+    <div class="subtitle">
+      Enter your numbers and see how long it could take to hit the jackpot.
+    </div>
 
-<div class="container">
+    <div class="section-title">Lottery setup</div>
+    <div class="settings">
+      <div class="setting-group">
+        <label for="lotteryPreset">Lottery preset</label>
+        <select id="lotteryPreset">
+          <option value="sportka">Sportka style (6/49)</option>
+          <option value="power">Power style (5/69 + 1/26)</option>
+          <option value="euro">Euro style (5/50 + 2/12)</option>
+          <option value="custom">Custom format</option>
+        </select>
+      </div>
 
-<h1>Lottery Simulator</h1>
+      <div class="setting-group">
+        <label for="drawsPerWeek">Draws per week</label>
+        <input id="drawsPerWeek" type="number" min="1" value="2" />
+      </div>
 
-<p>
-Enter your numbers and see how long it could take to hit the jackpot.
-</p>
+      <div class="setting-group">
+        <label for="ticketPrice">Ticket price</label>
+        <input id="ticketPrice" type="number" min="1" value="30" />
+      </div>
 
-<div>
+      <div class="setting-group">
+        <label for="currency">Currency</label>
+        <select id="currency">
+          <option value="CZK">CZK</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+    </div>
 
-<input id="n1" type="number" min="1" max="49">
-<input id="n2" type="number" min="1" max="49">
-<input id="n3" type="number" min="1" max="49">
-<input id="n4" type="number" min="1" max="49">
-<input id="n5" type="number" min="1" max="49">
-<input id="n6" type="number" min="1" max="49">
+    <div id="customSettings" class="settings hidden">
+      <div class="setting-group">
+        <label for="mainPicks">Main numbers picked</label>
+        <input id="mainPicks" type="number" min="1" value="6" />
+      </div>
 
-</div>
+      <div class="setting-group">
+        <label for="mainTotal">Main number pool</label>
+        <input id="mainTotal" type="number" min="2" value="49" />
+      </div>
 
-<button class="primary" onclick="simulate()">Run simulation</button>
+      <div class="setting-group">
+        <label for="bonusPicks">Bonus numbers picked</label>
+        <input id="bonusPicks" type="number" min="0" value="0" />
+      </div>
 
-<div id="result" class="result">
+      <div class="setting-group">
+        <label for="bonusTotal">Bonus number pool</label>
+        <input id="bonusTotal" type="number" min="0" value="0" />
+      </div>
+    </div>
 
-Your result will appear here.
+    <div class="section-title">Your main numbers</div>
+    <div id="mainInputs" class="inputs"></div>
 
-</div>
+    <div id="bonusSection" class="hidden">
+      <div class="section-title">Your bonus numbers</div>
+      <div id="bonusInputs" class="inputs"></div>
+    </div>
 
+    <div class="buttons">
+      <button class="primary" onclick="runOneSimulation()">Run 1 simulation</button>
+      <button class="primary" onclick="runHundredSimulations()">Run 100 simulations</button>
+      <button class="secondary" onclick="generateRandomNumbers()">Generate random numbers</button>
+      <button class="secondary" onclick="compareWithRandom()">Compare with random numbers</button>
+      <button class="success" onclick="copyShareText()">Copy share text</button>
+      <button class="danger" onclick="resetAll()">Reset</button>
+    </div>
 
-<div class="section-title">
-How hard is it to win the lottery?
-</div>
+    <div id="error" class="error"></div>
 
-<div class="card">
+    <div class="hero-result">
+      <div class="hero-label">Average jackpot wait</div>
+      <div class="hero-value" id="heroResult">—</div>
+      <div class="hero-desc" id="heroDescription">
+        Run a simulation to see your main result here.
+      </div>
+    </div>
 
-Winning the lottery jackpot is far harder than most people imagine.
+    <div class="results-grid">
+      <div class="card">
+        <h3>Odds per draw</h3>
+        <div class="value" id="oddsPerDraw">-</div>
+        <div class="small" id="oddsDescription">-</div>
+      </div>
 
-Even if you play regularly for many years, your chance of hitting the jackpot usually stays extremely small.
+      <div class="card">
+        <h3>Average wait</h3>
+        <div class="value" id="averageYears">-</div>
+        <div class="small">Based on your draws per week.</div>
+      </div>
 
-This simulator helps show the reality of lottery odds by running random simulations and probability calculations.
+      <div class="card">
+        <h3>Chance in 10 years</h3>
+        <div class="value" id="chance10">-</div>
+        <div class="small">Probability of at least one jackpot hit.</div>
+      </div>
 
-</div>
+      <div class="card">
+        <h3>Chance in 50 years</h3>
+        <div class="value" id="chance50">-</div>
+        <div class="small">Still usually very low.</div>
+      </div>
+    </div>
 
+    <div id="resultBox" class="result-box">
+      Your results will appear here.
+    </div>
 
-<div class="section-title">
-FAQ
-</div>
+    <div id="chartWrap" class="chart-wrap hidden">
+      <div class="chart-title">100-Simulation Reality Check</div>
+      <div id="chartGrid" class="chart-grid"></div>
+    </div>
 
-<div class="card">
-<strong>Do lucky numbers help?</strong>
-<br><br>
-No. Lucky numbers have exactly the same probability as random numbers.
-</div>
+    <div class="section-title">Your chance of winning over time</div>
+    <div class="odds-list">
+      <div class="odds-item">
+        10 years
+        <strong id="chance10b">-</strong>
+      </div>
+      <div class="odds-item">
+        20 years
+        <strong id="chance20b">-</strong>
+      </div>
+      <div class="odds-item">
+        50 years
+        <strong id="chance50b">-</strong>
+      </div>
+      <div class="odds-item">
+        80 years
+        <strong id="chance80b">-</strong>
+      </div>
+    </div>
 
-<div class="card">
-<strong>Why are the years so high?</strong>
-<br><br>
-Because jackpot odds are extremely small. Even playing for decades usually gives only a tiny chance.
-</div>
+    <div class="split">
+      <div>
+        <div class="section-title">Lifetime calculator</div>
+        <div class="settings">
+          <div class="setting-group">
+            <label for="currentAge">Current age</label>
+            <input id="currentAge" type="number" min="1" max="120" value="25" />
+          </div>
 
-<div class="card">
-<strong>Is this a prediction?</strong>
-<br><br>
-No. The simulator only shows random simulations based on probability.
-</div>
+          <div class="setting-group">
+            <label for="playUntilAge">Play until age</label>
+            <input id="playUntilAge" type="number" min="1" max="120" value="80" />
+          </div>
+        </div>
 
-</div>
+        <div class="buttons">
+          <button class="primary" onclick="runLifetimeCalculator()">Calculate lifetime odds</button>
+        </div>
 
-<script>
+        <div id="lifetimeBox" class="result-box">
+          Lifetime results will appear here.
+        </div>
+      </div>
 
-function simulate(){
+      <div>
+        <div class="section-title">Share result</div>
+        <div class="share-box">
+          <textarea id="shareText" class="share-text" readonly>Run a simulation to generate a shareable result.</textarea>
+        </div>
+      </div>
+    </div>
 
-let probability = 1/13983816
+    <div class="footer-note">
+      This tool shows random simulations and probability-based estimates. It does not predict future lottery draws.
+      For presets with bonus numbers, the jackpot requires matching both the main numbers and the bonus numbers.
+    </div>
+  </div>
 
-let draws = Math.ceil(Math.log(1-Math.random())/Math.log(1-probability))
+  <script>
+    const presetConfigs = {
+      sportka: {
+        name: "Sportka style (6/49)",
+        mainPicks: 6,
+        mainTotal: 49,
+        bonusPicks: 0,
+        bonusTotal: 0,
+        drawsPerWeek: 2,
+        ticketPrice: 30,
+        currency: "CZK"
+      },
+      power: {
+        name: "Power style (5/69 + 1/26)",
+        mainPicks: 5,
+        mainTotal: 69,
+        bonusPicks: 1,
+        bonusTotal: 26,
+        drawsPerWeek: 3,
+        ticketPrice: 2,
+        currency: "USD"
+      },
+      euro: {
+        name: "Euro style (5/50 + 2/12)",
+        mainPicks: 5,
+        mainTotal: 50,
+        bonusPicks: 2,
+        bonusTotal: 12,
+        drawsPerWeek: 2,
+        ticketPrice: 2.5,
+        currency: "EUR"
+      },
+      custom: {
+        name: "Custom format",
+        mainPicks: 6,
+        mainTotal: 49,
+        bonusPicks: 0,
+        bonusTotal: 0,
+        drawsPerWeek: 2,
+        ticketPrice: 30,
+        currency: "CZK"
+      }
+    };
 
-let years = draws/(2*52)
+    function combinations(n, k) {
+      if (k < 0 || n < 0 || k > n) return 0;
+      if (k === 0 || k === n) return 1;
+      k = Math.min(k, n - k);
+      let result = 1;
+      for (let i = 1; i <= k; i++) {
+        result = result * (n - k + i) / i;
+      }
+      return result;
+    }
 
-document.getElementById("result").innerHTML =
+    function formatNumber(num, maximumFractionDigits = 0) {
+      return num.toLocaleString("en-US", { maximumFractionDigits });
+    }
 
-"Jackpot hit after <b>"+draws.toLocaleString()+"</b> draws<br><br>"
-+
-"Approximate time: <b>"+years.toFixed(1)+" years</b>"
+    function formatPercent(num) {
+      if (num < 0.0001) return num.toFixed(6) + "%";
+      if (num < 0.01) return num.toFixed(4) + "%";
+      if (num < 1) return num.toFixed(3) + "%";
+      return num.toFixed(2) + "%";
+    }
 
-}
+    function setError(message) {
+      document.getElementById("error").textContent = message;
+    }
 
-</script>
+    function clearError() {
+      setError("");
+    }
 
+    function getSelectedPreset() {
+      return document.getElementById("lotteryPreset").value;
+    }
+
+    function applyPreset() {
+      const preset = getSelectedPreset();
+      const config = presetConfigs[preset];
+
+      document.getElementById("mainPicks").value = config.mainPicks;
+      document.getElementById("mainTotal").value = config.mainTotal;
+      document.getElementById("bonusPicks").value = config.bonusPicks;
+      document.getElementById("bonusTotal").value = config.bonusTotal;
+
+      document.getElementById("drawsPerWeek").value = config.drawsPerWeek;
+      document.getElementById("ticketPrice").value = config.ticketPrice;
+      document.getElementById("currency").value = config.currency;
+
+      document.getElementById("customSettings").classList.toggle("hidden", preset !== "custom");
+
+      rebuildNumberInputs();
+      updateStaticStats();
+      resetDynamicBoxes();
+    }
+
+    function getConfig() {
+      return {
+        mainPicks: Number(document.getElementById("mainPicks").value),
+        mainTotal: Number(document.getElementById("mainTotal").value),
+        bonusPicks: Number(document.getElementById("bonusPicks").value),
+        bonusTotal: Number(document.getElementById("bonusTotal").value)
+      };
+    }
+
+    function validateConfig(config) {
+      if (!Number.isInteger(config.mainPicks) || !Number.isInteger(config.mainTotal) ||
+          !Number.isInteger(config.bonusPicks) || !Number.isInteger(config.bonusTotal)) {
+        return "Lottery setup must contain whole numbers.";
+      }
+
+      if (config.mainPicks < 1 || config.mainTotal < 2 || config.mainPicks > config.mainTotal) {
+        return "Main lottery format is invalid.";
+      }
+
+      if (config.bonusPicks < 0 || config.bonusTotal < 0) {
+        return "Bonus lottery format is invalid.";
+      }
+
+      if (config.bonusPicks > 0 && config.bonusTotal < 1) {
+        return "Bonus pool must be greater than 0 when bonus picks are used.";
+      }
+
+      if (config.bonusPicks > config.bonusTotal) {
+        return "Bonus picks cannot be greater than bonus pool.";
+      }
+
+      return "";
+    }
+
+    function rebuildNumberInputs() {
+      const config = getConfig();
+      const mainInputs = document.getElementById("mainInputs");
+      const bonusInputs = document.getElementById("bonusInputs");
+      const bonusSection = document.getElementById("bonusSection");
+
+      mainInputs.innerHTML = "";
+      bonusInputs.innerHTML = "";
+
+      for (let i = 1; i <= config.mainPicks; i++) {
+        const input = document.createElement("input");
+        input.type = "number";
+        input.min = "1";
+        input.max = String(config.mainTotal);
+        input.placeholder = String(i);
+        input.className = "number-input";
+        input.id = "main_" + i;
+        mainInputs.appendChild(input);
+      }
+
+      if (config.bonusPicks > 0) {
+        bonusSection.classList.remove("hidden");
+
+        for (let i = 1; i <= config.bonusPicks; i++) {
+          const input = document.createElement("input");
+          input.type = "number";
+          input.min = "1";
+          input.max = String(config.bonusTotal);
+          input.placeholder = String(i);
+          input.className = "number-input";
+          input.id = "bonus_" + i;
+          bonusInputs.appendChild(input);
+        }
+      } else {
+        bonusSection.classList.add("hidden");
+      }
+    }
+
+    function getMainNumbers() {
+      const config = getConfig();
+      const values = [];
+      for (let i = 1; i <= config.mainPicks; i++) {
+        values.push(Number(document.getElementById("main_" + i).value));
+      }
+      return values;
+    }
+
+    function getBonusNumbers() {
+      const config = getConfig();
+      const values = [];
+      for (let i = 1; i <= config.bonusPicks; i++) {
+        values.push(Number(document.getElementById("bonus_" + i).value));
+      }
+      return values;
+    }
+
+    function validateNumberSet(numbers, min, max, label) {
+      if (numbers.some(n => !Number.isInteger(n) || n < min || n > max)) {
+        return `Please enter valid ${label} numbers between ${min} and ${max}.`;
+      }
+
+      const unique = new Set(numbers);
+      if (unique.size !== numbers.length) {
+        return `Please enter different ${label} numbers.`;
+      }
+
+      return "";
+    }
+
+    function validateAllInputs() {
+      const config = getConfig();
+      const configError = validateConfig(config);
+      if (configError) return configError;
+
+      const mainNumbers = getMainNumbers();
+      const mainError = validateNumberSet(mainNumbers, 1, config.mainTotal, "main");
+      if (mainError) return mainError;
+
+      if (config.bonusPicks > 0) {
+        const bonusNumbers = getBonusNumbers();
+        const bonusError = validateNumberSet(bonusNumbers, 1, config.bonusTotal, "bonus");
+        if (bonusError) return bonusError;
+      }
+
+      return "";
+    }
+
+    function getDrawsPerWeek() {
+      const value = Number(document.getElementById("drawsPerWeek").value);
+      return value > 0 ? value : 2;
+    }
+
+    function getTicketPrice() {
+      const value = Number(document.getElementById("ticketPrice").value);
+      return value > 0 ? value : 30;
+    }
+
+    function getCurrency() {
+      return document.getElementById("currency").value;
+    }
+
+    function getJackpotCombinations(config) {
+      const mainComb = combinations(config.mainTotal, config.mainPicks);
+      const bonusComb = config.bonusPicks > 0 ? combinations(config.bonusTotal, config.bonusPicks) : 1;
+      return mainComb * bonusComb;
+    }
+
+    function getJackpotProbability(config) {
+      return 1 / getJackpotCombinations(config);
+    }
+
+    function probabilityAtLeastOneWin(years, drawsPerWeek, p) {
+      const draws = years * 52 * drawsPerWeek;
+      return 1 - Math.pow(1 - p, draws);
+    }
+
+    function geometricSimulation(p) {
+      const u = Math.random();
+      return Math.ceil(Math.log(1 - u) / Math.log(1 - p));
+    }
+
+    function setHeroResult(value, description) {
+      document.getElementById("heroResult").textContent = value;
+      document.getElementById("heroDescription").textContent = description;
+    }
+
+    function updateStaticStats() {
+      clearError();
+
+      const config = getConfig();
+      const configError = validateConfig(config);
+      if (configError) {
+        setError(configError);
+        return;
+      }
+
+      const drawsPerWeek = getDrawsPerWeek();
+      const combinationsCount = getJackpotCombinations(config);
+      const p = 1 / combinationsCount;
+      const averageDraws = 1 / p;
+      const averageYears = averageDraws / (drawsPerWeek * 52);
+
+      const p10 = probabilityAtLeastOneWin(10, drawsPerWeek, p) * 100;
+      const p20 = probabilityAtLeastOneWin(20, drawsPerWeek, p) * 100;
+      const p50 = probabilityAtLeastOneWin(50, drawsPerWeek, p) * 100;
+      const p80 = probabilityAtLeastOneWin(80, drawsPerWeek, p) * 100;
+
+      document.getElementById("oddsPerDraw").textContent = "1 in " + formatNumber(combinationsCount);
+      document.getElementById("averageYears").textContent = formatNumber(averageYears) + " years";
+      document.getElementById("chance10").textContent = formatPercent(p10);
+      document.getElementById("chance50").textContent = formatPercent(p50);
+
+      let desc = `${config.mainPicks}/${config.mainTotal}`;
+      if (config.bonusPicks > 0) {
+        desc += ` + ${config.bonusPicks}/${config.bonusTotal}`;
+      }
+      document.getElementById("oddsDescription").textContent = `Jackpot format: ${desc}`;
+
+      document.getElementById("chance10b").textContent = formatPercent(p10);
+      document.getElementById("chance20b").textContent = formatPercent(p20);
+      document.getElementById("chance50b").textContent = formatPercent(p50);
+      document.getElementById("chance80b").textContent = formatPercent(p80);
+
+      setHeroResult(
+        formatNumber(averageYears) + " years",
+        "At your current draw frequency, this lottery is practically unwinnable in a normal human lifetime."
+      );
+    }
+
+    function renderHistogram(results, drawsPerWeek) {
+      const years = results.map(r => r / (drawsPerWeek * 52));
+
+      const buckets = [
+        { label: "< 10k years", count: 0 },
+        { label: "10k–50k", count: 0 },
+        { label: "50k–100k", count: 0 },
+        { label: "100k–500k", count: 0 },
+        { label: "500k+", count: 0 }
+      ];
+
+      years.forEach(y => {
+        if (y < 10000) buckets[0].count++;
+        else if (y < 50000) buckets[1].count++;
+        else if (y < 100000) buckets[2].count++;
+        else if (y < 500000) buckets[3].count++;
+        else buckets[4].count++;
+      });
+
+      const maxCount = Math.max(...buckets.map(b => b.count), 1);
+      const chartGrid = document.getElementById("chartGrid");
+      chartGrid.innerHTML = "";
+
+      buckets.forEach(bucket => {
+        const col = document.createElement("div");
+        col.className = "bar-col";
+
+        const value = document.createElement("div");
+        value.className = "bar-value";
+        value.textContent = bucket.count;
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.height = `${Math.max((bucket.count / maxCount) * 180, 8)}px`;
+
+        const label = document.createElement("div");
+        label.className = "bar-label";
+        label.textContent = bucket.label;
+
+        col.appendChild(value);
+        col.appendChild(bar);
+        col.appendChild(label);
+
+        chartGrid.appendChild(col);
+      });
+
+      document.getElementById("chartWrap").classList.remove("hidden");
+    }
+
+    function runOneSimulation() {
+      clearError();
+
+      const validationError = validateAllInputs();
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
+
+      const config = getConfig();
+      const p = getJackpotProbability(config);
+      const drawsPerWeek = getDrawsPerWeek();
+      const ticketPrice = getTicketPrice();
+      const currency = getCurrency();
+
+      const drawsNeeded = geometricSimulation(p);
+      const yearsNeeded = drawsNeeded / (drawsPerWeek * 52);
+      const moneySpent = drawsNeeded * ticketPrice;
+
+      setHeroResult(
+        formatNumber(yearsNeeded, 1) + " years",
+        "In this single random simulation, your numbers matched the jackpot after this approximate time."
+      );
+
+      document.getElementById("resultBox").innerHTML = `
+        <strong>In this simulation, your numbers matched the jackpot after:</strong><br>
+        ${formatNumber(drawsNeeded)} draws<br><br>
+
+        <strong>Approximate time:</strong><br>
+        ${formatNumber(yearsNeeded, 1)} years<br><br>
+
+        <strong>Money spent at ${formatNumber(ticketPrice, 2)} ${currency} per ticket:</strong><br>
+        ${formatNumber(moneySpent, 2)} ${currency}<br><br>
+
+        <span class="muted">This is one random simulation, not a prediction.</span>
+      `;
+
+      document.getElementById("shareText").value =
+        `My lottery numbers matched the jackpot after about ${formatNumber(yearsNeeded, 1)} years in one simulation.`;
+
+      document.getElementById("chartWrap").classList.add("hidden");
+    }
+
+    function runHundredSimulations() {
+      clearError();
+
+      const validationError = validateAllInputs();
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
+
+      const config = getConfig();
+      const p = getJackpotProbability(config);
+      const drawsPerWeek = getDrawsPerWeek();
+      const ticketPrice = getTicketPrice();
+      const currency = getCurrency();
+
+      const results = [];
+      for (let i = 0; i < 100; i++) {
+        results.push(geometricSimulation(p));
+      }
+
+      const sorted = [...results].sort((a, b) => a - b);
+      const averageDraws = results.reduce((sum, val) => sum + val, 0) / results.length;
+      const medianDraws = sorted[Math.floor(sorted.length / 2)];
+      const bestDraws = sorted[0];
+      const worstDraws = sorted[sorted.length - 1];
+
+      const averageYears = averageDraws / (drawsPerWeek * 52);
+      const medianYears = medianDraws / (drawsPerWeek * 52);
+      const bestYears = bestDraws / (drawsPerWeek * 52);
+      const worstYears = worstDraws / (drawsPerWeek * 52);
+      const averageSpent = averageDraws * ticketPrice;
+
+      setHeroResult(
+        formatNumber(averageYears, 1) + " years",
+        "At 2 draws per week, this lottery is practically unwinnable in a human lifetime."
+      );
+
+      document.getElementById("resultBox").innerHTML = `
+        <strong>100-Simulation Reality Check:</strong><br><br>
+
+        <strong>Average result:</strong> ${formatNumber(averageYears, 1)} years<br>
+        <strong>Median result:</strong> ${formatNumber(medianYears, 1)} years<br>
+        <strong>Best result:</strong> ${formatNumber(bestYears, 1)} years<br>
+        <strong>Worst result:</strong> ${formatNumber(worstYears, 1)} years<br><br>
+
+        <strong>Average draws:</strong> ${formatNumber(averageDraws)}<br>
+        <strong>Average money spent:</strong> ${formatNumber(averageSpent, 2)} ${currency}<br><br>
+
+        <span class="muted">These 100 simulations show how wildly lottery outcomes can vary.</span>
+      `;
+
+      document.getElementById("shareText").value =
+        `I ran 100 lottery simulations. Average jackpot wait: ${formatNumber(averageYears, 1)} years.`;
+
+      renderHistogram(results, drawsPerWeek);
+    }
+
+    function generateUniqueNumbers(count, max) {
+      const numbers = [];
+      while (numbers.length < count) {
+        const randomNumber = Math.floor(Math.random() * max) + 1;
+        if (!numbers.includes(randomNumber)) {
+          numbers.push(randomNumber);
+        }
+      }
+      numbers.sort((a, b) => a - b);
+      return numbers;
+    }
+
+    function generateRandomNumbers() {
+      clearError();
+
+      const config = getConfig();
+      const configError = validateConfig(config);
+      if (configError) {
+        setError(configError);
+        return;
+      }
+
+      const mainNumbers = generateUniqueNumbers(config.mainPicks, config.mainTotal);
+      for (let i = 0; i < config.mainPicks; i++) {
+        document.getElementById("main_" + (i + 1)).value = mainNumbers[i];
+      }
+
+      if (config.bonusPicks > 0) {
+        const bonusNumbers = generateUniqueNumbers(config.bonusPicks, config.bonusTotal);
+        for (let i = 0; i < config.bonusPicks; i++) {
+          document.getElementById("bonus_" + (i + 1)).value = bonusNumbers[i];
+        }
+      }
+
+      document.getElementById("shareText").value = "Random numbers generated. Run a simulation to create a shareable result.";
+      setHeroResult("Ready", "Random numbers were generated. Run a simulation to see the outcome.");
+      document.getElementById("chartWrap").classList.add("hidden");
+    }
+
+    function compareWithRandom() {
+      clearError();
+
+      const validationError = validateAllInputs();
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
+
+      const config = getConfig();
+      const p = getJackpotProbability(config);
+      const drawsPerWeek = getDrawsPerWeek();
+
+      const userResults = [];
+      const randomResults = [];
+
+      for (let i = 0; i < 100; i++) {
+        userResults.push(geometricSimulation(p));
+        randomResults.push(geometricSimulation(p));
+      }
+
+      const avgUser = userResults.reduce((a, b) => a + b, 0) / userResults.length;
+      const avgRandom = randomResults.reduce((a, b) => a + b, 0) / randomResults.length;
+
+      const avgUserYears = avgUser / (drawsPerWeek * 52);
+      const avgRandomYears = avgRandom / (drawsPerWeek * 52);
+      const difference = Math.abs(avgUserYears - avgRandomYears);
+
+      setHeroResult(
+        "No real edge",
+        "Your chosen numbers are not smarter than random numbers. Any difference you see here is just noise from the simulation."
+      );
+
+      document.getElementById("resultBox").innerHTML = `
+        <strong>Your numbers vs random numbers (100 simulations each):</strong><br><br>
+
+        <strong>Your numbers average:</strong> ${formatNumber(avgUserYears, 1)} years<br>
+        <strong>Random numbers average:</strong> ${formatNumber(avgRandomYears, 1)} years<br>
+        <strong>Simulated difference:</strong> ${formatNumber(difference, 1)} years<br><br>
+
+        <span class="muted">Both number sets have exactly the same real jackpot odds. This difference is only random variation from the simulation.</span>
+      `;
+
+      document.getElementById("shareText").value =
+        `I compared my lottery numbers with random numbers. Result: both have the same real odds.`;
+
+      document.getElementById("chartWrap").classList.add("hidden");
+    }
+
+    function runLifetimeCalculator() {
+      clearError();
+
+      const configError = validateConfig(getConfig());
+      if (configError) {
+        setError(configError);
+        return;
+      }
+
+      const currentAge = Number(document.getElementById("currentAge").value);
+      const playUntilAge = Number(document.getElementById("playUntilAge").value);
+      const drawsPerWeek = getDrawsPerWeek();
+      const ticketPrice = getTicketPrice();
+      const currency = getCurrency();
+      const p = getJackpotProbability(getConfig());
+
+      if (!Number.isInteger(currentAge) || !Number.isInteger(playUntilAge) || currentAge < 1 || playUntilAge > 120 || playUntilAge <= currentAge) {
+        setError("Please enter a valid age range.");
+        return;
+      }
+
+      const yearsPlaying = playUntilAge - currentAge;
+      const totalDraws = yearsPlaying * 52 * drawsPerWeek;
+      const totalSpent = totalDraws * ticketPrice;
+      const chanceToWin = (1 - Math.pow(1 - p, totalDraws)) * 100;
+      const chanceToNeverWin = 100 - chanceToWin;
+
+      setHeroResult(
+        formatPercent(chanceToWin),
+        `Even if you play for ${yearsPlaying} years, your jackpot chance is still usually tiny.`
+      );
+
+      document.getElementById("lifetimeBox").innerHTML = `
+        <strong>If you play from age ${currentAge} to ${playUntilAge}:</strong><br><br>
+
+        <strong>Total years playing:</strong> ${yearsPlaying}<br>
+        <strong>Total draws:</strong> ${formatNumber(totalDraws)}<br>
+        <strong>Total money spent:</strong> ${formatNumber(totalSpent, 2)} ${currency}<br><br>
+
+        <strong>Chance to hit jackpot at least once:</strong> ${formatPercent(chanceToWin)}<br>
+        <strong>Chance to never hit jackpot:</strong> ${formatPercent(chanceToNeverWin)}<br><br>
+
+        <strong>Reality check:</strong><br>
+        Even after playing for ${yearsPlaying} years, the jackpot chance is still usually very low.
+      `;
+
+      document.getElementById("shareText").value =
+        `Even if I played this lottery for ${yearsPlaying} years, my jackpot chance would still be only ${formatPercent(chanceToWin)}.`;
+
+      document.getElementById("chartWrap").classList.add("hidden");
+    }
+
+    function copyShareText() {
+      const text = document.getElementById("shareText").value;
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          alert("Share text copied.");
+        })
+        .catch(() => {
+          alert("Copy failed. Please copy the text manually.");
+        });
+    }
+
+    function resetDynamicBoxes() {
+      document.getElementById("resultBox").innerHTML = "Your results will appear here.";
+      document.getElementById("lifetimeBox").innerHTML = "Lifetime results will appear here.";
+      document.getElementById("shareText").value = "Run a simulation to generate a shareable result.";
+      setHeroResult("—", "Run a simulation to see your main result here.");
+      document.getElementById("chartWrap").classList.add("hidden");
+    }
+
+    function resetAll() {
+      applyPreset();
+
+      const config = getConfig();
+
+      for (let i = 1; i <= config.mainPicks; i++) {
+        document.getElementById("main_" + i).value = "";
+      }
+
+      for (let i = 1; i <= config.bonusPicks; i++) {
+        document.getElementById("bonus_" + i).value = "";
+      }
+
+      document.getElementById("currentAge").value = 25;
+      document.getElementById("playUntilAge").value = 80;
+
+      clearError();
+      resetDynamicBoxes();
+      updateStaticStats();
+    }
+
+    document.getElementById("lotteryPreset").addEventListener("change", applyPreset);
+    document.getElementById("drawsPerWeek").addEventListener("input", updateStaticStats);
+    document.getElementById("mainPicks").addEventListener("input", () => {
+      rebuildNumberInputs();
+      updateStaticStats();
+      resetDynamicBoxes();
+    });
+    document.getElementById("mainTotal").addEventListener("input", () => {
+      rebuildNumberInputs();
+      updateStaticStats();
+      resetDynamicBoxes();
+    });
+    document.getElementById("bonusPicks").addEventListener("input", () => {
+      rebuildNumberInputs();
+      updateStaticStats();
+      resetDynamicBoxes();
+    });
+    document.getElementById("bonusTotal").addEventListener("input", () => {
+      rebuildNumberInputs();
+      updateStaticStats();
+      resetDynamicBoxes();
+    });
+
+    applyPreset();
+  </script>
 </body>
 </html>
