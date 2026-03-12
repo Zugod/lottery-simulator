@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EuroMillions Lottery Simulator</title>
+  <meta name="description" content="Simulate EuroMillions-style lottery odds, compare random numbers, and calculate lifetime jackpot chances." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <a class="brand" href="index.html">Lottery Simulator</a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="sportka.html">Sportka</a>
+        <a class="active" href="euromillions.html">EuroMillions</a>
+        <a href="powerball.html">Powerball</a>
+      </nav>
+    </div>
+
+    <h1>EuroMillions Simulator</h1>
+    <div class="subtitle">
+      Test a 5/50 + 2/12 style lottery and see how long it could really take to hit the jackpot.
+    </div>
+
+    <div class="section-title">Lottery setup</div>
+    <div class="settings">
+      <div class="setting-group">
+        <label for="lotteryPreset">Lottery preset</label>
+        <select id="lotteryPreset">
+          <option value="sportka">Sportka style (6/49)</option>
+          <option value="power">Power style (5/69 + 1/26)</option>
+          <option value="euro">Euro style (5/50 + 2/12)</option>
+          <option value="custom">Custom format</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <label for="drawsPerWeek">Draws per week</label>
+        <input id="drawsPerWeek" type="number" min="1" value="2" />
+      </div>
+
+      <div class="setting-group">
+        <label for="ticketPrice">Ticket price</label>
+        <input id="ticketPrice" type="number" min="1" value="2.5" />
+      </div>
+
+      <div class="setting-group">
+        <label for="currency">Currency</label>
+        <select id="currency">
+          <option value="CZK">CZK</option>
+          <option value="EUR" selected>EUR</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="customSettings" class="settings hidden">
+      <div class="setting-group">
+        <label for="mainPicks">Main numbers picked</label>
+        <input id="mainPicks" type="number" min="1" value="5" />
+      </div>
+
+      <div class="setting-group">
+        <label for="mainTotal">Main number pool</label>
+        <input id="mainTotal" type="number" min="2" value="50" />
+      </div>
+
+      <div class="setting-group">
+        <label for="bonusPicks">Bonus numbers picked</label>
+        <input id="bonusPicks" type="number" min="0" value="2" />
+      </div>
+
+      <div class="setting-group">
+        <label for="bonusTotal">Bonus number pool</label>
+        <input id="bonusTotal" type="number" min="0" value="12" />
+      </div>
+    </div>
+
+    <div class="section-title">Your main numbers</div>
+    <div id="mainInputs" class="inputs"></div>
+
+    <div id="bonusSection" class="hidden">
+      <div class="section-title">Your bonus numbers</div>
+      <div id="bonusInputs" class="inputs"></div>
+    </div>
+
+    <div class="buttons">
+      <button class="primary" onclick="runOneSimulation()">Run 1 simulation</button>
+      <button class="primary" onclick="runHundredSimulations()">Run 100 simulations</button>
+      <button class="secondary" onclick="generateRandomNumbers()">Generate random numbers</button>
+      <button class="secondary" onclick="compareWithRandom()">Compare with random numbers</button>
+      <button class="success" onclick="copyShareText()">Copy share text</button>
+      <button class="danger" onclick="resetAll()">Reset</button>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <div class="hero-result">
+      <div class="hero-label">Average jackpot wait</div>
+      <div class="hero-value" id="heroResult">—</div>
+      <div class="hero-desc" id="heroDescription">
+        Run a simulation to see your main result here.
+      </div>
+    </div>
+
+    <div class="results-grid">
+      <div class="card">
+        <h3>Odds per draw</h3>
+        <div class="value" id="oddsPerDraw">-</div>
+        <div class="small" id="oddsDescription">-</div>
+      </div>
+
+      <div class="card">
+        <h3>Average wait</h3>
+        <div class="value" id="averageYears">-</div>
+        <div class="small">Based on your draws per week.</div>
+      </div>
+
+      <div class="card">
+        <h3>Chance in 10 years</h3>
+        <div class="value" id="chance10">-</div>
+        <div class="small">Probability of at least one jackpot hit.</div>
+      </div>
+
+      <div class="card">
+        <h3>Chance in 50 years</h3>
+        <div class="value" id="chance50">-</div>
+        <div class="small">Still usually very low.</div>
+      </div>
+    </div>
+
+    <div id="resultBox" class="result-box">
+      Your results will appear here.
+    </div>
+
+    <div id="chartWrap" class="chart-wrap hidden">
+      <div class="chart-title">100-Simulation Reality Check</div>
+      <div id="chartGrid" class="chart-grid"></div>
+    </div>
+
+    <div class="section-title">Your chance of winning over time</div>
+    <div class="odds-list">
+      <div class="odds-item">10 years<strong id="chance10b">-</strong></div>
+      <div class="odds-item">20 years<strong id="chance20b">-</strong></div>
+      <div class="odds-item">50 years<strong id="chance50b">-</strong></div>
+      <div class="odds-item">80 years<strong id="chance80b">-</strong></div>
+    </div>
+
+    <div class="split">
+      <div>
+        <div class="section-title">Lifetime calculator</div>
+        <div class="settings">
+          <div class="setting-group">
+            <label for="currentAge">Current age</label>
+            <input id="currentAge" type="number" min="1" max="120" value="25" />
+          </div>
+          <div class="setting-group">
+            <label for="playUntilAge">Play until age</label>
+            <input id="playUntilAge" type="number" min="1" max="120" value="80" />
+          </div>
+        </div>
+        <div class="buttons">
+          <button class="primary" onclick="runLifetimeCalculator()">Calculate lifetime odds</button>
+        </div>
+        <div id="lifetimeBox" class="result-box">
+          Lifetime results will appear here.
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Share result</div>
+        <div class="share-box">
+          <textarea id="shareText" class="share-text" readonly>Run a simulation to generate a shareable result.</textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">How hard is it to win EuroMillions?</div>
+    <div class="result-box">
+      EuroMillions-style jackpots are dramatically harder than standard 6/49 lotteries because you must match both the main numbers and the extra star numbers. That pushes the expected wait time to an extreme level.
+    </div>
+
+    <div class="footer-note">
+      EuroMillions requires matching both main and bonus numbers for the jackpot.
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    initLotteryPage("euro");
+  </script>
+</body>
+</html>
