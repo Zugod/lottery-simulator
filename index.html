@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lottery Simulator</title>
+
+  <title>Lottery Odds Simulator - How Long Would It Take to Win?</title>
+  <meta name="description" content="Enter your lottery numbers and see how long it could take to hit the jackpot. Compare simulations, lifetime odds, and the real probability of winning." />
+  <meta name="keywords" content="lottery odds, lottery simulator, jackpot odds, lottery probability, how long to win lottery, lottery calculator" />
+  <meta name="robots" content="index, follow" />
+
   <style>
     * {
       box-sizing: border-box;
@@ -14,7 +19,6 @@
       --panel: #121a2b;
       --panel-2: #182235;
       --card: #1c2740;
-      --card-soft: #22304d;
       --text: #e8eefc;
       --muted: #9fb0d0;
       --border: #2d3b59;
@@ -22,7 +26,6 @@
       --primary-hover: #8ab8ff;
       --success: #3ddc97;
       --danger: #ff7b7b;
-      --warning: #f6c85f;
       --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
     }
 
@@ -587,6 +590,55 @@
       </div>
     </div>
 
+    <div class="section-title">How hard is it to win the lottery?</div>
+    <div class="result-box">
+      Winning the lottery jackpot is far harder than most people imagine. Even if you play regularly for years,
+      your real chance of hitting the jackpot usually stays extremely low.
+
+      <br><br>
+
+      This simulator helps show the reality of lottery odds by using random simulations and probability-based estimates.
+      Your chosen numbers are not smarter than random numbers, and playing longer mainly increases how much money you spend.
+
+      <br><br>
+
+      The most useful way to think about lottery odds is not just "1 in X", but:
+      <br>- how many years you would need on average
+      <br>- how much money you would spend
+      <br>- how tiny your lifetime jackpot chance really is
+    </div>
+
+    <div class="section-title">FAQ</div>
+    <div class="results-grid">
+      <div class="card">
+        <h3>Do lucky numbers help?</h3>
+        <div class="small">
+          No. Lucky numbers have exactly the same jackpot chance as random numbers.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Why are the years so high?</h3>
+        <div class="small">
+          Because jackpot odds are extremely small. Even with regular play, the expected wait can be tens of thousands or even millions of years.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Is this a prediction?</h3>
+        <div class="small">
+          No. The simulator does not predict future draws. It shows random simulations and probability-based estimates.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Can a system beat the lottery?</h3>
+        <div class="small">
+          Not in normal jackpot games. Systems may change how you choose numbers, but they do not change the true jackpot odds.
+        </div>
+      </div>
+    </div>
+
     <div class="footer-note">
       This tool shows random simulations and probability-based estimates. It does not predict future lottery draws.
       For presets with bonus numbers, the jackpot requires matching both the main numbers and the bonus numbers.
@@ -1020,7 +1072,7 @@
 
       setHeroResult(
         formatNumber(averageYears, 1) + " years",
-        "At 2 draws per week, this lottery is practically unwinnable in a human lifetime."
+        "At your current draw frequency, this lottery is practically unwinnable in a human lifetime."
       );
 
       document.getElementById("resultBox").innerHTML = `
